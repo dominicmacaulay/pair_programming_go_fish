@@ -15,4 +15,14 @@ RSpec.describe Deck do
       expect(deck.cards.count).to eql standard_deck_length
     end
   end
+
+  describe 'shuffle' do
+    it 'should shuffle the deck' do
+      deck1 = Deck.new
+      deck2 = Deck.new
+      expect(deck1.cards).to eq deck2.cards
+      deck1.shuffle(Random.new(1000))
+      expect(deck1.cards).not_to eq deck2.cards
+    end
+  end
 end
