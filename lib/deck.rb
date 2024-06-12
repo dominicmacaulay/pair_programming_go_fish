@@ -10,6 +10,12 @@ class Deck
     @cards = cards
   end
 
+  def shuffle(seed = Random.new)
+    cards.shuffle!(random: seed)
+  end
+
+  private
+
   def make_cards
     Card::SUITS.flat_map do |suit|
       Card::RANKS.map do |rank|
