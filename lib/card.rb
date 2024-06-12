@@ -19,4 +19,8 @@ class Card
   def equal_rank?(other)
     rank == other.rank
   end
+
+  def ==(other)
+    rank == other.rank && suit == other.suit
+  end
 end
