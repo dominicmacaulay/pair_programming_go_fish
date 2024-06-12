@@ -15,4 +15,8 @@ class Card
   def value
     @value ||= RANKS.index(rank)
   end
+
+  def equal_rank?(other)
+    rank == other.rank
+  end
 end
