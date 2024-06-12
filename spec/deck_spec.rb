@@ -10,9 +10,9 @@ RSpec.describe Deck do
       expect(deck.cards).to eql [2]
     end
     it 'should create a new standard deck if no cards are given' do
-      standard_deck_length
+      standard_deck_length = 52
       deck = Deck.new
-      expect(deck.cards).to eql standard_deck_length
+      expect(deck.cards.count).to eql standard_deck_length
     end
   end
 end

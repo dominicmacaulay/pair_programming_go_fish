@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'card'
+
 # go fish deck class
 class Deck
   attr_reader :cards
@@ -9,5 +11,10 @@ class Deck
   end
 
   def make_cards
+    Card::SUITS.flat_map do |suit|
+      Card::RANKS.map do |rank|
+        Card.new(rank, suit)
+      end
+    end
   end
 end
