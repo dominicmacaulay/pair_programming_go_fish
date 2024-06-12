@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+require_relative 'spec_helper'
+require_relative '../lib/deck'
+
 RSpec.describe Deck do
   describe 'initialize' do
     it 'should have the passed in cards if given' do
