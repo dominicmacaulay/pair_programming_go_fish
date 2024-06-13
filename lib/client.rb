@@ -4,6 +4,12 @@ require 'socket'
 
 # client object
 class Client
+  STATES = {
+    unnamed: 'unnamed',
+    pending_ungreeted: 'pending ungreeted',
+    pending_greeted: 'pending greeted',
+    in_game: 'in game'
+  }.freeze
   attr_reader :socket, :output
 
   def initialize(port)

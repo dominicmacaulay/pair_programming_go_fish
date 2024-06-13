@@ -39,20 +39,20 @@ class SocketServer
 
   def create_player_if_possible
     client_states.each do |client, state|
-      next unless state == 'unnamed'
+      next unless state == Client::STATES[:unnamed]
 
       name = retrieve_name(client)
       next if name.nil?
 
       make_player(client, name)
-      client_states[client] = 'pending, unprompted'
+      client_states[client] = Client::STATES[:pending_ungreeted]
     end
   end
 
   private
 
   def create_client(client)
-    client_states[client] = 'unnamed'
+    client_states[client] = Client::STATES[:unnamed]
     send_message(client, 'I (God) demand you give me a name. Enter it now: ')
   end
 
@@ -72,11 +72,15 @@ class SocketServer
 
     return nil if name.nil?
 
-    unless name.length < 3
-      send_message(client, 'I (God) do not approve of this name. Do better: ')
-      return nil
-    end
+    return put_client_in_their_place(client) if name.length < Player::MINIMUM_NAME_LENGTH
+
     name
+  end
+
+  def put_client_in_their_place(client)
+    send_message(client,
+                 "I (God) do not approve of this name for it is not at least #{Player::MINIMUM_NAME_LENGTH}. Do better: ")
+    nil
   end
 
   def capture_client_input(client)

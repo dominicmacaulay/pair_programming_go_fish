@@ -27,7 +27,7 @@ RSpec.describe SocketServer do
   describe 'accept_new_client' do
     it 'adds the client to the client_states hash with unnamed value' do
       server_client = make_unnamed_client
-      expect(@server.client_states[server_client]).to eql 'unnamed'
+      expect(@server.client_states[server_client]).to eql Client::STATES[:unnamed]
     end
     it 'prompts the client to enter their name' do
       make_unnamed_client
@@ -41,13 +41,13 @@ RSpec.describe SocketServer do
       @clients.first.provide_input('Dom')
       @server.create_player_if_possible
       expect(@server.clients_with_players[server_client]).to respond_to(:hand)
-      expect(@server.client_states[server_client]).to eql 'pending, unprompted'
+      expect(@server.client_states[server_client]).to eql Client::STATES[:pending_ungreeted]
     end
     it 'does not add client to clients hash or change state if name is provided' do
       server_client = make_unnamed_client
       @server.create_player_if_possible
       expect(@server.clients_with_players.count).to eql 0
-      expect(@server.client_states[server_client]).to eql 'unnamed'
+      expect(@server.client_states[server_client]).to eql Client::STATES[:unnamed]
     end
   end
 end

@@ -2,6 +2,8 @@
 
 # go fish player class
 class Player
+  MINIMUM_NAME_LENGTH = 3
+
   attr_reader :name, :hand, :books
 
   def initialize(name, hand: [], books: [])
