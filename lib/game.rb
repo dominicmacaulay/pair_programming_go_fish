@@ -29,4 +29,11 @@ class Game
   def valid_rank_choice?(rank)
     current_player.hand_has_rank?(rank)
   end
+
+  def match_player_name(name)
+    named_player = players.detect do |player|
+      player.name == name && player != current_player
+    end
+    named_player.nil? ? ErrorMessage.new(name: true) : named_player
+  end
 end
