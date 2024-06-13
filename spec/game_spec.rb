@@ -2,7 +2,8 @@
 
 require_relative '../lib/game'
 require_relative '../lib/player'
-require_relative '../lib/error_message'
+require_relative '../lib/invalid_input_error'
+require_relative '../lib/invalid_name_error'
 require_relative 'spec_helper'
 
 RSpec.describe Game do
@@ -41,12 +42,12 @@ RSpec.describe Game do
     it 'returns an error message object if the name does not match to a player' do
       name = 'Steve'
       return_value = game.match_player_name(name)
-      expect(return_value).to eq ErrorMessage.new(name: name)
+      expect(return_value).to eq InvalidNameError.new(name)
     end
     it 'returns an error message object if the name only matches the current player' do
       name = game.current_player.name
       return_value = game.match_player_name(name)
-      expect(return_value).to eq ErrorMessage.new(name: name)
+      expect(return_value).to eq InvalidNameError.new(name)
     end
   end
 

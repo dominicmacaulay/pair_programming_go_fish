@@ -34,7 +34,7 @@ class Game
     named_player = players.detect do |player|
       player.name == name && player != current_player
     end
-    named_player.nil? ? ErrorMessage.new(name: name) : named_player
+    named_player.nil? ? InvalidNameError.new(name) : named_player
   end
 
   def play_round(opponent, rank)
