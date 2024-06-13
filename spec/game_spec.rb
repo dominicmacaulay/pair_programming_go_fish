@@ -2,6 +2,7 @@
 
 require_relative '../lib/game'
 require_relative '../lib/player'
+require_relative '../lib/error_message'
 require_relative 'spec_helper'
 
 RSpec.describe Game do
@@ -38,13 +39,14 @@ RSpec.describe Game do
       expect(return_value).to eql player2
     end
     it 'returns an error message object if the name does not match to a player' do
-        return_value = game.match_player_name('Steve')
-      expect(return_value).to respond_to(:display)
+      name = 'Steve'
+      return_value = game.match_player_name(name)
+      expect(return_value).to eq ErrorMessage.new(name: name)
     end
     it 'returns an error message object if the name only matches the current player' do
       name = game.current_player.name
       return_value = game.match_player_name(name)
-      expect(return_value).to respond_to(:display)
+      expect(return_value).to eq ErrorMessage.new(name: name)
     end
   end
 end
