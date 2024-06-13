@@ -25,4 +25,14 @@ RSpec.describe Deck do
       expect(deck1.cards).not_to eq deck2.cards
     end
   end
+
+  describe 'deal' do
+    it 'should take one card from the top of cards and return it' do
+      deck = Deck.new
+      top_card = deck.cards.first
+      card = deck.deal
+      expect(card).to eql top_card
+      expect(card.count).to be 1
+    end
+  end
 end
