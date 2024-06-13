@@ -9,4 +9,12 @@ class Player
     @hand = hand
     @books = books
   end
+
+  def add_to_hand(cards)
+    hand.push(*cards)
+  end
+
+  def hand_count
+    hand.count
+  end
 end
