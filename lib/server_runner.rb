@@ -8,7 +8,7 @@ server = SocketServer.new
 server.start
 loop do
   server.accept_new_client
-  server.assign_client_name_to_player
+  server.create_player_if_possible
   game = server.create_game_if_possible
   server.run_game(game) if game
 rescue StandardError
