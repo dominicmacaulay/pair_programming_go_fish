@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 require 'socket'
+require_relative 'player'
 
 # runs interactions between the clients and the server
 class SocketServer
   attr_reader :players_per_game, :client_states, :clients_with_players
+  attr_accessor :send_awaiting_message
 
   def initialize(players_per_game = 2)
     @players_per_game = players_per_game
     @client_states = {}
     @clients_with_players = {}
+    @send_awaiting_message = true
   end
 
   def port_number
@@ -26,11 +29,12 @@ class SocketServer
 
   def accept_new_client
     client = @server.accept_nonblock
-    client_states[client] = 'unnamed'
-    send_message(client, 'I (God) demand you give me a name. Enter it now: ')
+    create_client(client)
+    self.send_awaiting_message = true
+    puts 'Client: accepted.'
     client
   rescue IO::WaitReadable, Errno::EINTR
-    puts 'no client'
+    await_message
   end
 
   def create_player_if_possible
@@ -38,11 +42,26 @@ class SocketServer
       next unless state == 'unnamed'
 
       name = retrieve_name(client)
-      make_player(client, name) unless name.nil?
+      next if name.nil?
+
+      make_player(client, name)
+      client_states[client] = 'pending, unprompted'
     end
   end
 
   private
+
+  def create_client(client)
+    client_states[client] = 'unnamed'
+    send_message(client, 'I (God) demand you give me a name. Enter it now: ')
+  end
+
+  def await_message
+    return unless send_awaiting_message == true
+
+    self.send_awaiting_message = false
+    puts 'Awaiting clients'
+  end
 
   def make_player(client, name)
     clients_with_players[client] = Player.new(name)

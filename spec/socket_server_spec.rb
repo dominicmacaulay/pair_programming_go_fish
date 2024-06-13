@@ -40,11 +40,11 @@ RSpec.describe SocketServer do
       server_client = make_unnamed_client
       @clients.first.provide_input('Dom')
       @server.create_player_if_possible
-      expect(@server.clients_with_players[server_client])
+      expect(@server.clients_with_players[server_client]).to respond_to(:hand)
+      expect(@server.client_states[server_client]).to eql 'pending, unprompted'
     end
     it 'does not add client to clients hash or change state if name is provided' do
-      Client.new(@server.port_number)
-      server_client = @server.accept_new_client
+      server_client = make_unnamed_client
       @server.create_player_if_possible
       expect(@server.clients_with_players.count).to eql 0
       expect(@server.client_states[server_client]).to eql 'unnamed'
