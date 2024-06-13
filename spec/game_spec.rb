@@ -30,4 +30,18 @@ RSpec.describe Game do
       expect(player2.hand.count).to eql game.deal_number
     end
   end
+
+  describe 'match_player_name' do
+    it 'returns the player object that matches the given name' do
+      name = player2.name
+      expect(game.match_player_name(name)).to eql game.player2
+    end
+    it 'returns an error message object if the name does not match to a player' do
+      expect(game.match_player_name('Steve')).to respond_to(:display)
+    end
+    it 'returns an error message object if the name only matches the current player' do
+      name = game.current_player.name
+      expect(game.match_player_name(name)).to respond_to(:display)
+    end
+  end
 end
