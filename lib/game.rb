@@ -36,4 +36,19 @@ class Game
     end
     named_player.nil? ? ErrorMessage.new(name: name) : named_player
   end
+
+  def play_round(opponent, rank)
+    run_transaction(opponent, rank)
+  end
+
+  private
+
+  def run_transaction(opponent, rank)
+    opponent_transaction(opponent, rank) if opponent.hand_has_rank?(rank)
+  end
+
+  def opponent_transaction(opponent, rank)
+    cards = opponent.remove_cards_with_rank(rank)
+    current_player.add_to_hand(cards)
+  end
 end

@@ -57,12 +57,12 @@ RSpec.describe Game do
         player2.add_to_hand(Card.new('4', 'Spades'))
       end
       it 'take the card from the opponent and gives it to the player' do
-        play_round(player2, '4')
+        game.play_round(player2, '4')
         expect(player2.hand_has_rank?('4')).to be false
         expect(player1.rank_count('4')).to be 2
       end
       xit 'returns object' do
-        result = play_round(player2, '4')
+        result = game.play_round(player2, '4')
         expect(result).to eq
       end
     end

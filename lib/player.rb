@@ -24,4 +24,14 @@ class Player
     end
     false
   end
+
+  def remove_cards_with_rank(rank)
+    cards = hand.dup
+    hand.delete_if { |card| card.equal_rank?(rank) }
+    cards.select { |card| card.equal_rank?(rank) }
+  end
+
+  def rank_count(rank)
+    hand.select { |card| card.equal_rank?(rank) }.count
+  end
 end
