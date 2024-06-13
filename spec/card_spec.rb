@@ -19,12 +19,10 @@ RSpec.describe Card do
 
   describe 'equal_rank?' do
     it 'should return true if the ranks are equal' do
-      other_card = Card.new('4', 'Spades')
-      expect(card.equal_rank?(other_card)).to be true
+      expect(card.equal_rank?('4')).to be true
     end
     it 'should return false if the ranks are not equal' do
-      other_card = Card.new('5', 'Hearts')
-      expect(card.equal_rank?(other_card)).to be false
+      expect(card.equal_rank?('5')).to be false
     end
   end
 

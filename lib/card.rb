@@ -16,8 +16,8 @@ class Card
     @value ||= RANKS.index(rank)
   end
 
-  def equal_rank?(other)
-    rank == other.rank
+  def equal_rank?(rank)
+    self.rank == rank
   end
 
   def ==(other)
