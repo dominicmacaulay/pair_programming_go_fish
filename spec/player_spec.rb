@@ -24,4 +24,16 @@ RSpec.describe Player do
       expect(player.hand).to include(card1, card2)
     end
   end
+
+  describe 'hand_has_rank?' do
+    let(:player) { Player.new('Dom') }
+    it 'returns true if rank exists in hand' do
+      player.add_to_hand(Card.new('4', 'Hearts'))
+      expect(player.hand_has_rank?('4')).to be true
+    end
+    it 'returns false if rank does not exist in hand' do
+      player.add_to_hand(Card.new('4', 'Hearts'))
+      expect(player.hand_has_rank?('5')).to be false
+    end
+  end
 end

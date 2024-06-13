@@ -5,12 +5,14 @@ require_relative 'deck'
 # go fish game class
 class Game
   attr_reader :deck_cards, :players, :winner, :deal_number
+  attr_accessor :current_player
 
   def initialize(players, deck_cards: nil, deal_number: 5)
     @deal_number = deal_number
     @deck_cards = deck_cards
     @players = players
     @winner = nil
+    @current_player = players.first
   end
 
   def deck
@@ -22,5 +24,9 @@ class Game
     deal_number.times do
       players.each { |player| player.add_to_hand(deck.deal) }
     end
+  end
+
+  def valid_rank_choice?(rank)
+    current_player.hand_has_rank?(rank)
   end
 end

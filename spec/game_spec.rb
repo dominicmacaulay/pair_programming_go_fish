@@ -13,6 +13,7 @@ RSpec.describe Game do
       expect(game.players).to eql([player1, player2])
       expect(game.winner).to be nil
       expect(game.deck).to respond_to(:cards)
+      expect(game.current_player).to eql(game.players.first)
     end
   end
 
