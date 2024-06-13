@@ -10,11 +10,13 @@ RSpec.describe SocketServer do
   before(:each) do
     @server = SocketServer.new
     @server.start
+    @clients = []
     sleep(0.1)
   end
 
   after(:each) do
     @server.stop
+    @clients.each(&:close)
   end
 
   it 'is not listening on a port before it is started' do
@@ -23,23 +25,35 @@ RSpec.describe SocketServer do
   end
 
   describe 'accept_new_client' do
-    it 'adds the client to the unnamed_clients array' do
-      expect(@server.unnamed_clients.length).to eql 0
-      make_unnamed_client
-      expect(@server.unnamed_clients.length).to eql 1
+    it 'adds the client to the client_states hash with unnamed value' do
+      server_client = make_unnamed_client
+      expect(@server.client_states[server_client]).to eql 'unnamed'
     end
     it 'prompts the client to enter their name' do
-      client = make_unnamed_client
-      expect(client.capture_output).to eql 'Enter your name: '
+      make_unnamed_client
+      expect(@clients.first.capture_output).to eql 'I (God) demand you give me a name. Enter it now: '
     end
   end
 
   describe 'create_player_if_possible' do
+    it 'adds client to clients hash and changes state to waiting if name is provided' do
+      server_client = make_unnamed_client
+      @clients.first.provide_input('Dom')
+      @server.create_player_if_possible
+      expect(@server.clients_with_players[server_client])
+    end
+    it 'does not add client to clients hash or change state if name is provided' do
+      Client.new(@server.port_number)
+      server_client = @server.accept_new_client
+      @server.create_player_if_possible
+      expect(@server.clients_with_players.count).to eql 0
+      expect(@server.client_states[server_client]).to eql 'unnamed'
+    end
   end
 end
 
 def make_unnamed_client
   client = Client.new(@server.port_number)
+  @clients.push(client)
   @server.accept_new_client
-  client
 end
