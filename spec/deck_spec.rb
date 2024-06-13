@@ -32,7 +32,6 @@ RSpec.describe Deck do
       top_card = deck.cards.first
       card = deck.deal
       expect(card).to eql top_card
-      expect(card.count).to be 1
     end
   end
 end

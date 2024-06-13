@@ -14,6 +14,10 @@ class Deck
     cards.shuffle!(random: seed)
   end
 
+  def deal
+    cards.shift
+  end
+
   private
 
   def make_cards
