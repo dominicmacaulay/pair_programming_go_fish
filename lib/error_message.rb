@@ -12,6 +12,11 @@ class ErrorMessage
     name_message unless name == false
   end
 
+  def ==(other)
+    return false unless name == other.name
+    true
+  end
+
   private
 
   def name_message

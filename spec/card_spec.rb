@@ -12,7 +12,7 @@ RSpec.describe Card do
       expect(card.suit).to eql 'Hearts'
     end
     it 'should have a value' do
-      index_of_number_four = 2
+      index_of_number_four = 3
       expect(card.value).to eql index_of_number_four
     end
   end
