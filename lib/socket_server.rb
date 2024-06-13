@@ -6,13 +6,14 @@ require_relative 'player'
 # runs interactions between the clients and the server
 class SocketServer
   attr_reader :players_per_game, :client_states, :clients_with_players
-  attr_accessor :send_awaiting_message
+  attr_accessor :send_awaiting_message, :games
 
   def initialize(players_per_game = 2)
     @players_per_game = players_per_game
     @client_states = {}
     @clients_with_players = {}
     @send_awaiting_message = true
+    @games = []
   end
 
   def port_number
@@ -49,7 +50,34 @@ class SocketServer
     end
   end
 
+  def create_game_if_possible
+    if pending_clients.count >= players_per_game
+      games.push(Game.new(retrieve_players))
+    else
+      send_pending_players_message
+    end
+  end
+
   private
+
+  #   TODO: write this method
+  def send_pending_players_message
+  end
+
+  def retrieve_players
+    pending_clients.map do |client, state|
+      next unless clients_with_players.key?(client)
+
+      client_states[client] = Client::STATES[:in_game]
+      clients_with_players[client]
+    end.compact
+  end
+
+  def pending_clients
+    client_states.select do |client, state|
+      state == Client::STATES[:pending_greeted] || state == Client::STATES[:pending_ungreeted]
+    end
+  end
 
   def create_client(client)
     client_states[client] = Client::STATES[:unnamed]

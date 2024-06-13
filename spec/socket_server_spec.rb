@@ -50,10 +50,36 @@ RSpec.describe SocketServer do
       expect(@server.client_states[server_client]).to eql Client::STATES[:unnamed]
     end
   end
+
+  describe 'create_game_if_possible' do
+    it 'creates a game if there are enough players' do
+      make_full_client('P 1')
+      make_full_client('P 2')
+      @server.create_game_if_possible
+      expect(@server.games.length).to eql 1
+    end
+    it 'does not create a game if there are not enough pending players' do
+      make_full_client('P 1')
+      make_full_client('P 2')
+      make_full_client('P 3')
+      @server.create_game_if_possible
+      @server.create_game_if_possible
+      expect(@server.games.length).not_to eql 2
+    end
+  end
 end
 
 def make_unnamed_client
   client = Client.new(@server.port_number)
   @clients.push(client)
   @server.accept_new_client
+end
+
+def make_full_client(name)
+  client = Client.new(@server.port_number)
+  @clients.push(client)
+  server_client = @server.accept_new_client
+  @clients.last.provide_input(name)
+  @server.create_player_if_possible
+  server_client
 end
