@@ -60,8 +60,13 @@ class SocketServer
 
   private
 
-  #   TODO: write this method
   def send_pending_players_message
+    client_states.each do |client, state|
+      next unless state == Client::STATES[:pending_ungreeted]
+
+      send_message(client, 'Waiting for other players to join...')
+      client_states[client] = Client::STATES[:pending_greeted]
+    end
   end
 
   def retrieve_players

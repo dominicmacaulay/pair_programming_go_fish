@@ -66,6 +66,27 @@ RSpec.describe SocketServer do
       @server.create_game_if_possible
       expect(@server.games.length).not_to eql 2
     end
+    it 'sends waiting players a message when there are not enough to make a game' do
+      make_full_client('P 1')
+      @clients.first.capture_output
+      @server.create_game_if_possible
+      expect(@clients.first.capture_output).to match 'Waiting'
+    end
+    it 'sends waiting message only once' do
+      make_full_client('P 1')
+      @server.create_game_if_possible
+      @clients.first.capture_output
+      @server.create_game_if_possible
+      expect(@clients.first.capture_output).to eql ''
+    end
+    it 'does not send waiting message to players in a game' do
+      make_full_client('P 1')
+      @server.create_game_if_possible
+      expect(@clients.first.capture_output).to match 'Waiting'
+      make_full_client('P 2')
+      @server.create_game_if_possible
+      expect(@clients.first.capture_output).not_to match 'Waiting'
+    end
   end
 end
 
