@@ -4,6 +4,7 @@ require 'socket'
 require_relative 'player'
 require_relative 'game'
 require_relative 'socket_runner'
+require_relative 'client'
 
 # runs interactions between the clients and the server
 class SocketServer
@@ -58,6 +59,7 @@ class SocketServer
       games.last
     else
       send_ungreeted_players_message
+      nil
     end
   end
 

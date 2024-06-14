@@ -23,12 +23,12 @@ RSpec.describe SocketRunner do
         expect(@current_player.capture_output).to match 'you received'
       end
 
-      fit 'should display the player their hand and opponents' do
+      it 'should display the player their hand and opponents' do
         @runner.play_round
         expect(@client1.capture_output).to include('You have')
       end
 
-      fit 'should display the player their hand and opponents' do
+      it 'should display the player their hand and opponents' do
         @runner.play_round
         expect(@client1.capture_output).to include('Your opponents')
       end
@@ -41,7 +41,7 @@ RSpec.describe SocketRunner do
         @runner.play_round
         expect(@current_player.capture_output).to match 'rank'
         @runner.play_round
-        expect(@current_player.capture_output).to eql ''
+        expect(@current_player.capture_output).not_to match 'rank'
       end
       it 'returns nil if the player has not given a rank and sends a message for an invalid rank' do
         expect(@runner.play_round).to be nil

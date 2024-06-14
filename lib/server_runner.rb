@@ -11,6 +11,8 @@ loop do
   server.create_player_if_possible
   game = server.create_game_if_possible
   server.run_game(game) if game
-rescue StandardError
-  server.stop
+  begin
+  rescue StandardError
+    server.stop
+  end
 end

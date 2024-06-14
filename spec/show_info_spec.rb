@@ -18,15 +18,15 @@ RSpec.describe ShowInfo do
   let(:show_info4) { ShowInfo.new(cards: cards4, opponents: opponents1) }
 
   describe '#==' do
-    fit 'should return false if cards are different' do
+    it 'should return false if cards are different' do
       expect(show_info1 == show_info2).to be false
     end
 
-    fit 'should return false if players are different' do
+    it 'should return false if players are different' do
       expect(show_info1 == show_info3).to be false
     end
 
-    fit 'should return true if players and cards are the same' do
+    it 'should return true if players and cards are the same' do
       expect(show_info1 == show_info4).to be true
     end
   end

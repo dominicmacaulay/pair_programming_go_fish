@@ -2,12 +2,12 @@
 
 require_relative 'client'
 
-puts 'Enter the server you would like to connect to: '
-input = gets.chomp
+# puts 'Enter the server you would like to connect to: '
+# input = gets.chomp
 
-port = input >= 4 ? input : 3336
+# port = input.length >= 4 ? input : 3336
 
-client = Client.new(port)
+client = Client.new(3336)
 loop do
   output = ''
   output = client.capture_output until output != ''

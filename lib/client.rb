@@ -13,7 +13,6 @@ class Client
   attr_reader :socket, :output
 
   def initialize(port)
-    @port = port
     @socket = TCPSocket.new('localhost', port)
   end
 
