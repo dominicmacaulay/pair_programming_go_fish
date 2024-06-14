@@ -42,6 +42,11 @@ class Game
     EmptyHandMessage.new(got_cards: true)
   end
 
+  def retrieve_opponents
+    opponents = players.map { |player| player if player != current_player }.compact
+    ShowInfo.new(opponents: opponents)
+  end
+
   def validate_rank_choice(rank)
     return ConfirmationMessage.new(rank) if current_player.hand_has_rank?(rank)
 

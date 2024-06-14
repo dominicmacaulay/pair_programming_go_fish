@@ -1,4 +1,6 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
+
+require_relative 'show_info'
 
 # go fish player class
 class Player
@@ -35,5 +37,9 @@ class Player
 
   def rank_count(rank)
     hand.select { |card| card.equal_rank?(rank) }.count
+  end
+
+  def show_hand
+    ShowInfo.new(cards: hand)
   end
 end

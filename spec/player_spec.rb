@@ -3,6 +3,7 @@
 require_relative 'spec_helper'
 require_relative '../lib/player'
 require_relative '../lib/card'
+require_relative '../lib/show_info'
 
 RSpec.describe Player do
   describe 'initialize' do
@@ -67,6 +68,13 @@ RSpec.describe Player do
       card3 = Card.new('5', 'Clubs')
       player.add_to_hand([card1, card2, card3])
       expect(player.rank_count(rank)).to eql 2
+    end
+  end
+
+  describe 'show_hand' do
+    it 'returns message object' do
+      player = Player.new('Dom', hand: [Card.new('4', 'Hearts')])
+      expect(player.show_hand).to eq ShowInfo.new(cards: player.hand)
     end
   end
 end

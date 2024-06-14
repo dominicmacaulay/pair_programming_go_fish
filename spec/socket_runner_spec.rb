@@ -15,8 +15,22 @@ RSpec.describe SocketRunner do
       it 'should send a message and return immediately if the player cannot play' do
         @game.deck.clear_cards
         @runner.play_round
-        expect(@client1.capture_output).to match 'Sorry'
+        expect(@current_player.capture_output).to match 'Sorry'
         expect(@game.current_player.name).to eql @client2_name
+      end
+      it 'should send a message if the player received cards from the pond' do
+        @runner.play_round
+        expect(@current_player.capture_output).to match 'you received'
+      end
+
+      fit 'should display the player their hand and opponents' do
+        @runner.play_round
+        expect(@client1.capture_output).to include('You have')
+      end
+
+      fit 'should display the player their hand and opponents' do
+        @runner.play_round
+        expect(@client1.capture_output).to include('Your opponents')
       end
     end
     describe 'first ensures that the player has given a valid rank' do

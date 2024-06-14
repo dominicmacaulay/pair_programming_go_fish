@@ -3,11 +3,12 @@
 # socket runner for go fish
 class SocketRunner
   attr_reader :game, :clients
-  attr_accessor :rank, :rank_prompted
+  attr_accessor :info_shown, :rank, :rank_prompted
 
   def initialize(game:, clients:)
     @game = game
     @clients = clients
+    @info_shown = false
     @rank = nil
     @rank_prompted = false
   end
@@ -26,10 +27,21 @@ class SocketRunner
   def play_round
     return unless player_can_play?(game.current_player.dup)
 
+    show_info
     nil unless valid_rank?
   end
 
   private
+
+  def show_info # rubocop:disable Metrics/AbcSize
+    return if info_shown == true
+
+    hand = game.current_player.show_hand
+    opponents = game.retrieve_opponents
+
+    send_message(clients[game.current_player], hand.display)
+    send_message(clients[game.current_player], opponents.display)
+  end
 
   def valid_rank?
     prompt_for_rank
@@ -62,7 +74,7 @@ class SocketRunner
 
     current_player = game.players.detect { |game_player| game_player.name == player.name }
     send_message(clients[current_player], message.display)
-    message.display.include?('took cards')
+    message.display.include?('you received')
   end
 
   def send_message(client, message)
