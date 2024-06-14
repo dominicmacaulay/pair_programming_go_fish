@@ -2,6 +2,8 @@
 
 require 'socket'
 require_relative 'player'
+require_relative 'game'
+require_relative 'socket_runner'
 
 # runs interactions between the clients and the server
 class SocketServer
