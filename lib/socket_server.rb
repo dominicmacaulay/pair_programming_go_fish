@@ -89,11 +89,11 @@ class SocketServer
   def retrieve_players
     players = []
     pending_clients.each_key do |client|
-      return players if players.length == players_per_game
       next unless clients_with_players.key?(client)
 
       client_states[client] = Client::STATES[:in_game]
       players << clients_with_players[client]
+      return players if players.length == players_per_game
     end
   end
 

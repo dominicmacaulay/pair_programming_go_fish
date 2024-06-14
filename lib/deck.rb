@@ -4,7 +4,7 @@ require_relative 'card'
 
 # go fish deck class
 class Deck
-  attr_reader :cards
+  attr_accessor :cards
 
   def initialize(cards: make_cards)
     @cards = cards
@@ -16,6 +16,14 @@ class Deck
 
   def deal
     cards.shift
+  end
+
+  def clear_cards
+    self.cards = []
+  end
+
+  def cards_count
+    cards.count
   end
 
   private

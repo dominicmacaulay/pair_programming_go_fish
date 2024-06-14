@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'deck'
+require_relative 'empty_hand_message'
+require_relative 'confirmation_message'
+require_relative 'invalid_name_error'
+require_relative 'invalid_rank_error'
+require_relative 'invalid_input_error'
 
 # go fish game class
 class Game
@@ -26,8 +31,21 @@ class Game
     end
   end
 
-  def valid_rank_choice?(rank)
-    current_player.hand_has_rank?(rank)
+  def deal_to_player_if_necessary
+    return nil unless current_player.hand_count.zero?
+
+    if deck.cards_count.zero?
+      @current_player = next_player
+      return EmptyHandMessage.new(deck_empty: true)
+    end
+    deal_number.times { current_player.add_to_hand(deck.deal) }
+    EmptyHandMessage.new(got_cards: true)
+  end
+
+  def validate_rank_choice(rank)
+    return ConfirmationMessage.new(rank) if current_player.hand_has_rank?(rank)
+
+    InvalidRankError.new(rank)
   end
 
   def match_player_name(name)
@@ -42,6 +60,11 @@ class Game
   end
 
   private
+
+  def next_player
+    index = players.index(current_player)
+    self.current_player = players[(index + 1) % players.count]
+  end
 
   def run_transaction(opponent, rank)
     opponent_transaction(opponent, rank) if opponent.hand_has_rank?(rank)
