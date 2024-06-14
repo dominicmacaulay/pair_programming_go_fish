@@ -58,13 +58,13 @@ RSpec.describe SocketServer do
       @server.create_game_if_possible
       expect(@server.games.length).to eql 1
     end
-    fit 'does not create a game if there are not enough pending players' do
+    it 'does not create a game if there are not enough pending players' do
       make_full_client('P 1')
       make_full_client('P 2')
       make_full_client('P 3')
       @server.create_game_if_possible
       @server.create_game_if_possible
-      expect(games.first.players.length).to eql 2
+      expect(@server.games.first.players.length).to eql 2
       expect(@server.games.length).not_to eql 2
     end
     it 'sends waiting players a message when there are not enough to make a game' do
@@ -87,6 +87,14 @@ RSpec.describe SocketServer do
       make_full_client('P 2')
       @server.create_game_if_possible
       expect(@clients.first.capture_output).not_to match 'Waiting'
+    end
+  end
+  describe 'create_runner' do
+    it 'creates a runner' do
+      make_full_client('P 1')
+      make_full_client('P 2')
+      game = @server.create_game_if_possible
+      expect(@server.create_runner(game)).to respond_to(:play_game)
     end
   end
 end

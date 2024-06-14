@@ -55,21 +55,21 @@ class SocketServer
   def create_game_if_possible
     if pending_clients.count >= players_per_game
       games.push(Game.new(retrieve_players))
-      binding.irb
+      games.last
     else
       send_ungreeted_players_message
     end
   end
 
   def run_game(game)
-    create_runner(game).start
+    create_runner(game).play_game
   end
-
-  private
 
   def create_runner(game)
     SocketRunner.new(game: game, clients: game_clients(game.players))
   end
+
+  private
 
   def game_clients(players)
     clients_with_players.select do |client, player|
