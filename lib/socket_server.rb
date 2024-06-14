@@ -53,14 +53,29 @@ class SocketServer
   def create_game_if_possible
     if pending_clients.count >= players_per_game
       games.push(Game.new(retrieve_players))
+      binding.irb
     else
-      send_pending_players_message
+      send_ungreeted_players_message
     end
+  end
+
+  def run_game(game)
+    create_runner(game).start
   end
 
   private
 
-  def send_pending_players_message
+  def create_runner(game)
+    SocketRunner.new(game: game, clients: game_clients(game.players))
+  end
+
+  def game_clients(players)
+    clients_with_players.select do |client, player|
+      players.include?(player)
+    end.invert
+  end
+
+  def send_ungreeted_players_message
     client_states.each do |client, state|
       next unless state == Client::STATES[:pending_ungreeted]
 
@@ -70,12 +85,14 @@ class SocketServer
   end
 
   def retrieve_players
-    pending_clients.map do |client, state|
+    players = []
+    pending_clients.each_key do |client|
+      return players if players.length == players_per_game
       next unless clients_with_players.key?(client)
 
       client_states[client] = Client::STATES[:in_game]
-      clients_with_players[client]
-    end.compact
+      players << clients_with_players[client]
+    end
   end
 
   def pending_clients
