@@ -30,7 +30,7 @@ class SocketRunner
     return unless player_can_play?(game.current_player.dup)
 
     show_info
-    return nil unless valid_rank?
+    return unless valid_rank?
 
     nil unless valid_opponent?
   end
@@ -72,6 +72,7 @@ class SocketRunner
 
     send_message(clients[game.current_player], opponents.display)
     send_message(clients[game.current_player], hand.display)
+    self.info_shown = true
   end
 
   def valid_rank?

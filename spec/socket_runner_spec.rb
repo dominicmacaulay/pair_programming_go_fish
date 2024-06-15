@@ -14,7 +14,7 @@ RSpec.describe SocketRunner do
       end
       it 'should send a message and return immediately if the player cannot play' do
         @game.deck.clear_cards
-        @runner.play_round
+        expect(@runner.play_round).to be nil
         expect(@current_player.capture_output).to match 'Sorry'
         expect(@game.current_player.name).to eql @client2_name
       end
@@ -46,10 +46,11 @@ RSpec.describe SocketRunner do
       it 'returns nil if the player has not given a rank and sends a message for an invalid rank' do
         expect(@runner.play_round).to be nil
         @current_player.provide_input('15')
-        @runner.play_round
+        expect(@runner.play_round).to be nil
         expect(@current_player.capture_output).to match('foolishly')
+        expect(@runner.rank).to be nil
       end
-      it 'returns an acceptance message and sets the state varaible if rank is valid' do
+      it 'returns an acceptance message and sets the state variable if rank is valid' do
         @game.current_player.add_to_hand(Card.new('3', 'Hearts'))
         @current_player.provide_input('3')
         @runner.play_round
