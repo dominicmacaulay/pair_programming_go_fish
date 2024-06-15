@@ -132,8 +132,10 @@ class SocketServer
   end
 
   def put_client_in_their_place(client)
-    send_message(client,
-                 "I (God) do not approve of this name for it is not at least #{Player::MINIMUM_NAME_LENGTH}. Do better: ")
+    message = "I (God) do not approve of this name for it is not at
+      least #{Player::MINIMUM_NAME_LENGTH} characters long. Do better: "
+
+    send_message(client, message)
     nil
   end
 

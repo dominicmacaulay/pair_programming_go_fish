@@ -2,10 +2,6 @@
 
 require_relative '../lib/game'
 require_relative '../lib/player'
-require_relative '../lib/invalid_input_error'
-require_relative '../lib/invalid_name_error'
-require_relative '../lib/invalid_rank_error'
-require_relative '../lib/empty_hand_message'
 require_relative 'spec_helper'
 
 RSpec.describe Game do
@@ -42,12 +38,19 @@ RSpec.describe Game do
     end
     it 'returns a message if the deck is also empty' do
       game.deck.clear_cards
-      message = EmptyHandMessage.new(deck_empty: true)
+      message = 'Sorry. Your hand is empty and there are no cards in the pond. You will have to sit this one out.'
       expect(game.deal_to_player_if_necessary).to eq message
     end
     it 'returns a message if the player received cards' do
-      message = EmptyHandMessage.new(got_cards: true)
+      message = 'Your hand was empty, but you received cards from the pond!'
       expect(game.deal_to_player_if_necessary).to eq message
+    end
+  end
+
+  describe 'retrieve_opponents' do
+    it 'returns an appropriate message' do
+      message = ShowInfo.new(opponents: [game.players.last])
+      expect(game.retrieve_opponents).to eq message
     end
   end
 
@@ -55,13 +58,13 @@ RSpec.describe Game do
     it 'returns a message if the rank if valid' do
       rank = '4'
       player1.add_to_hand(Card.new(rank, 'Hearts'))
-      message = ConfirmationMessage.new(rank)
+      message = 'This is an acceptable choice.'
       expect(game.validate_rank_choice(rank)).to eq message
     end
     it 'returns error message if the rank is invalid' do
       rank = '4'
       player1.add_to_hand(Card.new(rank, 'Hearts'))
-      message = InvalidRankError.new('5')
+      message = 'You have chosen foolishly. Choose again: '
       expect(game.validate_rank_choice('5')).to eq message
     end
   end
@@ -75,12 +78,14 @@ RSpec.describe Game do
     it 'returns an error message object if the name does not match to a player' do
       name = 'Steve'
       return_value = game.match_player_name(name)
-      expect(return_value).to eq InvalidNameError.new(name)
+      message = "Do you see '#{name}' among your opponents? Try again: "
+      expect(return_value).to eq message
     end
     it 'returns an error message object if the name only matches the current player' do
       name = game.current_player.name
       return_value = game.match_player_name(name)
-      expect(return_value).to eq InvalidNameError.new(name)
+      message = "Do you see '#{name}' among your opponents? Try again: "
+      expect(return_value).to eq message
     end
   end
 

@@ -1,33 +1,41 @@
+# frozen_string_literal: true
+
 require_relative '../lib/show_info'
+require_relative '../lib/card'
+require_relative '../lib/player'
+require_relative 'spec_helper'
 
 RSpec.describe ShowInfo do
-  let(:cards1) { [Card.new('2', 'Hearts'), Card.new('3', 'Hearts')] }
-  let(:opponents1) { [Player.new('Someone'), Player.new('Someoneelse')] }
-  let(:show_info1) { ShowInfo.new(cards: cards1, opponents: opponents1) }
-
-  let(:cards2) { [Card.new('2', 'Hearts'), Card.new('4', 'Hearts')] }
-  let(:opponents2) { [Player.new('Someone'), Player.new('Someoneelse')] }
-  let(:show_info2) { ShowInfo.new(cards: cards2, opponents: opponents2) }
-
-  let(:cards3) { [Card.new('2', 'Hearts'), Card.new('3', 'Hearts')] }
-  let(:opponents3) { [Player.new('player1'), Player.new('player2')] }
-  let(:show_info3) { ShowInfo.new(cards: cards3, opponents: opponents3) }
-
-  let(:cards4) { [Card.new('2', 'Hearts'), Card.new('3', 'Hearts')] }
-  let(:opponents4) { [Player.new('Someone'), Player.new('Someoneelse')] }
-  let(:show_info4) { ShowInfo.new(cards: cards4, opponents: opponents1) }
-
+  describe 'show cards' do
+    it 'should return a string when given cards' do
+      info = ShowInfo.new(cards: [Card.new('4', 'Hearts'), Card.new('3', 'Spades'), Card.new('5', 'Clubs')])
+      expected_result = 'You have a 4 of Hearts, a 3 of Spades, and a 5 of Clubs'
+      result = info.display
+      expect(result).to eql expected_result
+    end
+  end
+  describe 'show opponents' do
+    it 'should return a string when given opponents' do
+      info = ShowInfo.new(opponents: [Player.new('Dom'), Player.new('Josh'), Player.new('Micah')])
+      expected_result = 'Your opponents are Dom, Josh, and Micah'
+      result = info.display
+      expect(result).to eql expected_result
+    end
+  end
   describe '#==' do
-    it 'should return false if cards are different' do
-      expect(show_info1 == show_info2).to be false
+    it 'should return true if attributes are equal' do
+      info1 = ShowInfo.new
+      info2 = ShowInfo.new
+      expect(info1).to eq info2
     end
 
     it 'should return false if players are different' do
-      expect(show_info1 == show_info3).to be false
-    end
-
-    it 'should return true if players and cards are the same' do
-      expect(show_info1 == show_info4).to be true
+      info1 = ShowInfo.new
+      info2 = ShowInfo.new(cards: true)
+      info3 = ShowInfo.new(opponents: true)
+      expect(info1).not_to eq info2
+      expect(info1).not_to eq info3
+      expect(info2).not_to eq info3
     end
   end
 end

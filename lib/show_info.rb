@@ -34,7 +34,7 @@ class ShowInfo # rubocop:disable Style/Documentation
   end
 
   def show_opponents
-    message = 'Your opponents '
+    message = 'Your opponents are '
     opponents.each do |opponent|
       message.concat('and ') if opponent == opponents.last && opponent != opponents.first
       message.concat(opponent.name.to_s)

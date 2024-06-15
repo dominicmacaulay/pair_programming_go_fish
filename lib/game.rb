@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'deck'
-require_relative 'empty_hand_message'
-require_relative 'confirmation_message'
-require_relative 'invalid_name_error'
-require_relative 'invalid_rank_error'
-require_relative 'invalid_input_error'
 
 # go fish game class
 class Game
@@ -36,10 +31,10 @@ class Game
 
     if deck.cards_count.zero?
       @current_player = next_player
-      return EmptyHandMessage.new(deck_empty: true)
+      return 'Sorry. Your hand is empty and there are no cards in the pond. You will have to sit this one out.'
     end
     deal_number.times { current_player.add_to_hand(deck.deal) }
-    EmptyHandMessage.new(got_cards: true)
+    'Your hand was empty, but you received cards from the pond!'
   end
 
   def retrieve_opponents
@@ -48,16 +43,16 @@ class Game
   end
 
   def validate_rank_choice(rank)
-    return ConfirmationMessage.new(rank) if current_player.hand_has_rank?(rank)
+    return 'This is an acceptable choice.' if current_player.hand_has_rank?(rank)
 
-    InvalidRankError.new(rank)
+    'You have chosen foolishly. Choose again: '
   end
 
   def match_player_name(name)
     named_player = players.detect do |player|
       player.name == name && player != current_player
     end
-    named_player.nil? ? InvalidNameError.new(name) : named_player
+    named_player.nil? ? "Do you see '#{name}' among your opponents? Try again: " : named_player
   end
 
   def play_round(opponent, rank)

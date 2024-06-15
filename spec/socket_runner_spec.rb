@@ -47,7 +47,7 @@ RSpec.describe SocketRunner do
         expect(@runner.play_round).to be nil
         @current_player.provide_input('15')
         @runner.play_round
-        expect(@current_player.capture_output).to match('not a valid rank')
+        expect(@current_player.capture_output).to match('foolishly')
       end
       it 'returns an acceptance message and sets the state varaible if rank is valid' do
         @game.current_player.add_to_hand(Card.new('3', 'Hearts'))
@@ -55,6 +55,18 @@ RSpec.describe SocketRunner do
         @runner.play_round
         expect(@current_player.capture_output).to match('acceptable')
         expect(@runner.rank).to eql '3'
+      end
+    end
+    describe 'ensures that the player has given a valid opponent' do
+      before do
+        @game.current_player.add_to_hand(Card.new('3', 'Hearts'))
+        @current_player.provide_input('3')
+      end
+      it 'prompts the client to enter an opponent once' do
+        @runner.play_round
+        expect(@current_player.capture_output).to match 'enter the opponent'
+        @runner.play_round
+        expect(@current_player.capture_output).not_to match 'enter the opponent'
       end
     end
   end
