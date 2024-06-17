@@ -2,11 +2,11 @@
 
 require_relative 'show_info'
 require_relative 'book'
+require_relative 'game'
 
 # go fish player class
 class Player
   MINIMUM_NAME_LENGTH = 3
-  MINIMUM_BOOK_LENGTH = 4
 
   attr_reader :name, :hand, :books
 
@@ -56,7 +56,7 @@ class Player
   def make_book?
     unique_cards = find_unique_cards
     unique_cards.each do |unique_card|
-      create_book(unique_card.rank) if rank_count(unique_card.rank) >= MINIMUM_BOOK_LENGTH
+      create_book(unique_card.rank) if rank_count(unique_card.rank) >= Game::MINIMUM_BOOK_LENGTH
     end
     unique_cards != find_unique_cards
   end
@@ -64,18 +64,7 @@ class Player
   private
 
   def find_unique_cards
-    unique_cards = []
-    hand.each do |card|
-      unique_cards << card if unique_card?(card, unique_cards)
-    end
-    unique_cards
-  end
-
-  def unique_card?(card, array_of_cards)
-    array_of_cards.each do |array_card|
-      return false if array_card.equal_rank?(card.rank)
-    end
-    true
+    hand.uniq(&:rank)
   end
 
   def create_book(rank)

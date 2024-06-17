@@ -4,7 +4,12 @@
 
 require_relative 'socket_server'
 
-server = SocketServer.new
+puts 'How many players per game?'
+
+input = gets.chomp.to_i
+
+server = input <= 2 ? SocketServer.new : SocketServer.new(input)
+
 server.start
 loop do
   server.accept_new_client

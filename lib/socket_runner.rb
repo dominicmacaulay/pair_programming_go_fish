@@ -33,15 +33,23 @@ class SocketRunner
     return unless valid_rank?
     return unless valid_opponent?
 
-    result = game.play_round
-    send_result(result)
+    send_result(game.play_round(opponent, rank))
+    reset_state
   end
 
   private
 
+  def reset_state
+    self.info_shown = false
+    self.rank = nil
+    self.rank_prompted = false
+    self.opponent = nil
+    self.opponent_prompted = false
+  end
+
   def send_result(result) # rubocop:disable Metrics/AbcSize
     send_message(clients[game.current_player], result.display_for(game.current_player))
-    send_message(clients[opponent], result.display(opponent))
+    send_message(clients[opponent], result.display_for(opponent))
     clients.each_key do |player|
       next if player == game.current_player || player == opponent
 

@@ -199,6 +199,10 @@ RSpec.describe Game do
   end
 
   describe 'smoke test' do
+    let(:player1) { Player.new('Dom') }
+    let(:player2) { Player.new('Micah') }
+    let(:player3) { Player.new('Josh') }
+    let(:game) { Game.new([player1, player2, player3]) }
     it 'runs test' do
       game.start
       until game.winners
@@ -210,6 +214,7 @@ RSpec.describe Game do
         message = game.play_round(other_player, rank)
         puts message.display_for(game.players[current_index])
         puts message.display_for(other_player)
+        puts message.display_for(game.players[(current_index + 2) % game.players.count])
         puts
       end
       puts game.display_winners

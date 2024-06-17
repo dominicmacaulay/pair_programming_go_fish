@@ -7,6 +7,19 @@ require_relative '../lib/client'
 
 RSpec.describe SocketRunner do
   describe 'play_round' do
+    before do
+      @server = SocketServer.new(3)
+      @server.start
+      sleep(0.2)
+
+      create_clients
+
+      @game = @server.create_game_if_possible
+      @runner = @server.create_runner(@game)
+
+      @current_player = get_current_player
+    end
+
     describe 'draw if necessary' do
       before do
         @client1.capture_output
@@ -105,7 +118,7 @@ RSpec.describe SocketRunner do
         expect(@runner.rank).to be nil
         expect(@runner.rank_prompted).to be false
         expect(@runner.opponent).to be nil
-        expect(@runner.opponent).to be false
+        expect(@runner.opponent_prompted).to be false
       end
     end
   end
@@ -117,19 +130,6 @@ RSpec.describe SocketRunner do
     @client1 = create_client(@client1_name)
     @client2 = create_client(@client2_name)
     @client3 = create_client(@client3_name)
-  end
-
-  before do
-    @server = SocketServer.new(3)
-    @server.start
-    sleep(0.1)
-
-    create_clients
-
-    @game = @server.create_game_if_possible
-    @runner = @server.create_runner(@game)
-
-    @current_player = get_current_player
   end
 
   def create_client(name)
