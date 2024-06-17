@@ -77,4 +77,45 @@ RSpec.describe Player do
       expect(player.show_hand).to eq ShowInfo.new(cards: player.hand)
     end
   end
+
+  describe 'make_book?' do
+    before do
+      @player = Player.new('Dom')
+      @player.add_to_hand([Card.new('4', 'Hearts'), Card.new('4', 'Spades'), Card.new('4', 'Clubs'),
+                           Card.new('4', 'diamonds')])
+      @player.add_to_hand([Card.new('8', 'Hearts'), Card.new('8', 'Spades'), Card.new('8', 'Clubs'),
+                           Card.new('8', 'diamonds')])
+      @player.add_to_hand([Card.new('Jack', 'Hearts'), Card.new('Jack', 'Spades'), Card.new('Jack', 'Clubs'),
+                           Card.new('Jack', 'diamonds')])
+    end
+    it 'makes a book and returns true if the player can make a book' do
+      expect(@player.make_book?).to be true
+      expect(@player.book_count).to eql 3
+      expect(@player.hand_count).to eql 0
+    end
+    it 'does nothing and returns false if the player cannot make a book' do
+      @player.make_book?
+      @player.add_to_hand([Card.new('4', 'Hearts'), Card.new('4', 'Spades')])
+      expect(@player.make_book?).to be false
+      expect(@player.book_count).to eql 3
+      expect(@player.hand_count).to eql 2
+    end
+  end
+
+  describe 'total_book_value' do
+    before do
+      @player = Player.new('Dom')
+      @player.add_to_hand([Card.new('4', 'Hearts'), Card.new('4', 'Spades'), Card.new('4', 'Clubs'),
+                           Card.new('4', 'diamonds')])
+      @player.add_to_hand([Card.new('8', 'Hearts'), Card.new('8', 'Spades'), Card.new('8', 'Clubs'),
+                           Card.new('8', 'diamonds')])
+      @player.add_to_hand([Card.new('Jack', 'Hearts'), Card.new('Jack', 'Spades'), Card.new('Jack', 'Clubs'),
+                           Card.new('Jack', 'diamonds')])
+    end
+    it 'returns the total value of all of the books summed' do
+      @player.make_book?
+      book_value = @player.books[0].value + @player.books[1].value + @player.books[2].value
+      expect(@player.total_book_value).to eql book_value
+    end
+  end
 end

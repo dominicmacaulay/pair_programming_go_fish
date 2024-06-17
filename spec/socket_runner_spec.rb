@@ -69,11 +69,58 @@ RSpec.describe SocketRunner do
         @runner.play_round
         expect(@current_player.capture_output).not_to match 'enter the opponent'
       end
+      it 'returns false if the client does not enter an opponent' do
+        expect(@runner.play_round).to be nil
+      end
+      it 'returns false if the client provides invalid input and sends the client a message' do
+        @runner.play_round
+        @current_player.provide_input('madfa')
+        expect(@runner.play_round).to be nil
+        expect(@runner.opponent).to be nil
+        expect(@current_player.capture_output).to match 'among your opponents'
+      end
+      it 'accepts valid player input and sends the message for the game result' do
+        @runner.play_round
+        @current_player.provide_input('Josh')
+        expect(@runner.play_round)
+        expect(@current_player.capture_output).to match 'You asked'
+      end
+    end
+    describe 'displays round results to every player in the game' do
+      before do
+        @game.current_player.add_to_hand(Card.new('3', 'Hearts'))
+        @current_player.provide_input('3')
+        @runner.play_round
+        @current_player.provide_input('Josh')
+      end
+      it 'returns correct message to each player' do
+        @runner.play_round
+        expect(@client1.capture_output).to match 'You asked'
+        expect(@client2.capture_output).to match 'asked you'
+        expect(@client3.capture_output).to match 'Dom asked'
+      end
+      it 'resets all variables at the end of a full game_round' do
+        @runner.play_round
+        expect(@runner.info_shown).to be false
+        expect(@runner.rank).to be nil
+        expect(@runner.rank_prompted).to be false
+        expect(@runner.opponent).to be nil
+        expect(@runner.opponent).to be false
+      end
     end
   end
 
+  def create_clients
+    @client1_name = 'Dom'
+    @client2_name = 'Josh'
+    @client3_name = 'Micah'
+    @client1 = create_client(@client1_name)
+    @client2 = create_client(@client2_name)
+    @client3 = create_client(@client3_name)
+  end
+
   before do
-    @server = SocketServer.new
+    @server = SocketServer.new(3)
     @server.start
     sleep(0.1)
 
@@ -82,16 +129,7 @@ RSpec.describe SocketRunner do
     @game = @server.create_game_if_possible
     @runner = @server.create_runner(@game)
 
-    @client1.capture_output
-    @client2.capture_output
     @current_player = get_current_player
-  end
-
-  def create_clients
-    @client1_name = 'Dom'
-    @client2_name = 'Josh'
-    @client1 = create_client(@client1_name)
-    @client2 = create_client(@client2_name)
   end
 
   def create_client(name)
@@ -104,8 +142,9 @@ RSpec.describe SocketRunner do
 
   def get_current_player # rubocop:disable Naming/AccessorMethodName
     return @client1 if @client1_name == @game.current_player.name
+    return @client2 if @client2_name == @game.current_player.name
 
-    @client2
+    @client3
   end
 
   after do

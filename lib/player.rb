@@ -1,10 +1,12 @@
 # frozen_string_literal: false
 
 require_relative 'show_info'
+require_relative 'book'
 
 # go fish player class
 class Player
   MINIMUM_NAME_LENGTH = 3
+  MINIMUM_BOOK_LENGTH = 4
 
   attr_reader :name, :hand, :books
 
@@ -20,6 +22,14 @@ class Player
 
   def hand_count
     hand.count
+  end
+
+  def book_count
+    books.count
+  end
+
+  def total_book_value
+    books.map(&:value).sum
   end
 
   def hand_has_rank?(rank)
@@ -41,5 +51,36 @@ class Player
 
   def show_hand
     ShowInfo.new(cards: hand)
+  end
+
+  def make_book?
+    unique_cards = find_unique_cards
+    unique_cards.each do |unique_card|
+      create_book(unique_card.rank) if rank_count(unique_card.rank) >= MINIMUM_BOOK_LENGTH
+    end
+    unique_cards != find_unique_cards
+  end
+
+  private
+
+  def find_unique_cards
+    unique_cards = []
+    hand.each do |card|
+      unique_cards << card if unique_card?(card, unique_cards)
+    end
+    unique_cards
+  end
+
+  def unique_card?(card, array_of_cards)
+    array_of_cards.each do |array_card|
+      return false if array_card.equal_rank?(card.rank)
+    end
+    true
+  end
+
+  def create_book(rank)
+    cards = hand.select { |card| card.equal_rank?(rank) }
+    hand.delete_if { |card| cards.include?(card) }
+    books << Book.new(cards)
   end
 end

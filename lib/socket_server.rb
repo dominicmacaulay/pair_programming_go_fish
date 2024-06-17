@@ -8,19 +8,16 @@ require_relative 'client'
 
 # runs interactions between the clients and the server
 class SocketServer
-  attr_reader :players_per_game, :client_states, :clients_with_players
+  attr_reader :players_per_game, :client_states, :clients_with_players, :port_number
   attr_accessor :send_awaiting_message, :games
 
-  def initialize(players_per_game = 2)
+  def initialize(players_per_game = 2, port_number = 3336)
+    @port_number = port_number
     @players_per_game = players_per_game
     @client_states = {}
     @clients_with_players = {}
     @send_awaiting_message = true
     @games = []
-  end
-
-  def port_number
-    3336
   end
 
   def start
